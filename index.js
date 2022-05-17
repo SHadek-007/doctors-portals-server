@@ -158,14 +158,24 @@ async function run(){
           return res.send({success:true, result});
         });
 
+        //all doctors load in manageDoctor component
         app.get('/doctor', verifyJWT, verifyJWT, async(req,res)=>{
           const doctors = await doctorCollection.find().toArray();
           res.send(doctors);
         })
 
+        //doctor insert from client or add doctor
         app.post('/doctor', verifyJWT, verifyAdmin, async (req, res) => {
           const doctor = req.body;
           const result = await doctorCollection.insertOne(doctor);
+          res.send(result);
+        });
+
+        //delete doctor in manageDoctor component
+        app.delete('/doctor/:email', verifyJWT, verifyAdmin, async (req, res) => {
+          const email = req.params.email;
+          const filter = {email:email}
+          const result = await doctorCollection.deleteOne(filter);
           res.send(result);
         });
     }
